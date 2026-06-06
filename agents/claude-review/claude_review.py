@@ -31,6 +31,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Only fetch and print the diff, no review",
     )
+    parser.add_argument(
+        "--post",
+        action="store_true",
+        help="Post the review as a comment on the pull request",
+    )
     return parser.parse_args()
 
 
@@ -236,8 +241,12 @@ def analyze_pr(metadata: dict[str, Any], diff: str | None) -> dict[str, Any]:
     if metadata["total_changes"] > 1000 or len(metadata["changed_files"]) > 15:
         confidence = "Low"
 
+    summary = build_narrative_summary(metadata)
+    if detail_lines:
+        summary += "\n" + "\n".join(detail_lines)
+
     return {
-        "summary": build_narrative_summary(metadata) + "\n".join(detail_lines),
+        "summary": summary,
         "risks": risks or ["No significant risks identified."],
         "suggestions": suggestions or ["No additional suggestions."],
         "confidence": confidence,
@@ -305,6 +314,29 @@ def format_markdown(metadata: dict[str, Any], review: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def post_review_comment(
+    owner: str, repo: str, pr_number: int, body: str, token: str
+) -> None:
+    payload = json.dumps({"body": body}).encode()
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues/{pr_number}/comments"
+    req = urllib.request.Request(url, data=payload, method="POST")
+    req.add_header("Authorization", f"Bearer {token}")
+    req.add_header("Accept", "application/vnd.github.v3+json")
+    req.add_header("Content-Type", "application/json")
+    req.add_header("User-Agent", "claude-review-agent")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode())
+            print(
+                f"Posted review comment: {data.get('html_url', '(no url)')}",
+                file=sys.stderr,
+            )
+    except urllib.error.HTTPError as exc:
+        err_body = exc.read().decode()[:500]
+        print(f"Error posting comment: {exc.code} {err_body}", file=sys.stderr)
+        sys.exit(1)
+
+
 def parse_pr_url(pr_url: str) -> tuple[str | None, str | None, int | None]:
     match = re.match(r"https?://github\.com/([^/]+)/([^/]+)/pull/(\d+)", pr_url)
     if match:
@@ -363,6 +395,9 @@ def main() -> None:
         print(f"Review written to {args.output}", file=sys.stderr)
     else:
         print(output)
+
+    if args.post:
+        post_review_comment(owner, repo, pr_number, output, token)
 
 
 if __name__ == "__main__":

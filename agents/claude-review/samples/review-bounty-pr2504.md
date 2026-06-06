@@ -1,12 +1,12 @@
 ## PR Review: feat: add destructive command blocker hook (Issue #3)
 
-> **Repository:** `claude-builders-bounty/claude-builders-bounty` | **PR #2504** | **Author:** @Omgiri01 | **Confidence:** High
+> **Repository:** `claude-builders-bounty/claude-builders-bounty` | **PR #2504** | **Author:** @Omgiri01
 
 ---
 
 ### Summary of Changes
 
-This PR modifies **4 files** with **+152** / **-0** changes across **2 commit(s)**.
+This pull request titled "feat: add destructive command blocker hook (Issue #3)" updates 4 file(s) with +152/-0 lines across 2 commit(s). The author describes the change as: ### Description This PR implements a python-based `PreToolUse` hooks gatekeeper (`pre-tool-use.py`) that intercepts and blocks dangerous bash commands (e.g. `rm -rf`, `DROP TABLE`, `git push --force`,.
 
 **File type breakdown:**
 - `.md`: 1 file(s) (21+, 0-)
@@ -26,6 +26,8 @@ This PR modifies **4 files** with **+152** / **-0** changes across **2 commit(s)
 - Changes span 3 file types. Verify cross-language compatibility.
 
 ---
+
+### Confidence Score: **High**
 
 ### Review Metadata
 

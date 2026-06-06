@@ -62,6 +62,30 @@ class AnalyzePrTests(unittest.TestCase):
         self.assertEqual(review["confidence"], "Low")
 
 
+class SummaryFormatTests(unittest.TestCase):
+    def test_summary_has_blank_line_before_file_breakdown(self):
+        metadata = {
+            "title": "Add feature",
+            "body": "Implements the feature.",
+            "changed_files": [
+                {
+                    "filename": "src/app.py",
+                    "status": "modified",
+                    "additions": 10,
+                    "deletions": 1,
+                    "changes": 11,
+                }
+            ],
+            "total_changes": 11,
+            "commits": 1,
+            "additions": 10,
+            "deletions": 1,
+            "labels": [],
+        }
+        review = claude_review.analyze_pr(metadata, diff="+++ b/src/app.py\n+pass\n")
+        self.assertIn("feature.\n\n**File type breakdown:**", review["summary"])
+
+
 class MarkdownFormatTests(unittest.TestCase):
     def test_required_sections_present(self):
         metadata = {
