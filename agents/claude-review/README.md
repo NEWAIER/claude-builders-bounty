@@ -10,17 +10,17 @@ Bounty submission for [issue #4](https://github.com/claude-builders-bounty/claud
 
 ```bash
 # CLI (matches acceptance criteria)
-chmod +x agents/claude-review/claude-review
-agents/claude-review/claude-review --pr https://github.com/owner/repo/pull/123
+chmod +x claude-review
+claude-review --pr https://github.com/owner/repo/pull/123
 
 # Post review as a PR comment
-agents/claude-review/claude-review --pr https://github.com/owner/repo/pull/123 --post
+claude-review --pr https://github.com/owner/repo/pull/123 --post
 
 # Direct Python invocation
 python agents/claude-review/claude_review.py --pr https://github.com/owner/repo/pull/123
 
 # Save output to a file
-agents/claude-review/claude-review --pr https://github.com/owner/repo/pull/123 -o review.md
+claude-review --pr https://github.com/owner/repo/pull/123 -o review.md
 ```
 
 Set `GITHUB_TOKEN` (or pass `--token`) with `repo` scope for private repos or `public_repo` for public repositories.
