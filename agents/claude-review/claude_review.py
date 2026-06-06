@@ -173,10 +173,17 @@ def analyze_pr(metadata: dict[str, Any], diff: str | None) -> dict[str, Any]:
             )
 
         debug_prints = re.findall(
-            r"(\+.*(?:console\.log|print\(|pprint|logger\.debug).*)",
+            r"(\+.*(?:console\.log|pprint\(|logger\.debug).*)",
             diff,
         )
-        if debug_prints and metadata["total_changes"] > 100:
+        debug_prints.extend(
+            re.findall(
+                r"(\+.*print\s*\([^)]*(?:debug|DEBUG|temp|tmp|xxx)[^)]*\).*)",
+                diff,
+                re.I,
+            )
+        )
+        if debug_prints:
             risks.append(
                 "Debug/console statements detected in new code. Remove before merging."
             )

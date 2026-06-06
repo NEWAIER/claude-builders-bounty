@@ -16,7 +16,7 @@ This pull request titled "Add generate changelog skill" updates 4 file(s) with +
 
 ### Identified Risks
 
-- [ ] Debug/console statements detected in new code. Remove before merging.
+- [ ] No significant risks identified.
 
 ---
 

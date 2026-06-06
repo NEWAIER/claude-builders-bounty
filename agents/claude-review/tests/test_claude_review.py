@@ -56,6 +56,20 @@ class AnalyzePrTests(unittest.TestCase):
         review = claude_review.analyze_pr(self._metadata(), diff=diff)
         self.assertTrue(any("TODO" in risk for risk in review["risks"]))
 
+    def test_cli_print_not_flagged_as_debug(self):
+        diff = (
+            "+++ b/cli.py\n"
+            "+print(final_content)\n"
+            "+print(f\"Wrote {output_path}\")\n"
+        )
+        review = claude_review.analyze_pr(self._metadata(), diff=diff)
+        self.assertFalse(any("Debug/console" in risk for risk in review["risks"]))
+
+    def test_debug_print_flagged(self):
+        diff = "+++ b/app.py\n+print('debug state:', value)\n"
+        review = claude_review.analyze_pr(self._metadata(), diff=diff)
+        self.assertTrue(any("Debug/console" in risk for risk in review["risks"]))
+
     def test_large_pr_lowers_confidence(self):
         metadata = self._metadata(total_changes=1200, changed_files=[{"filename": f"f{i}.py", "status": "added", "additions": 100, "deletions": 0, "changes": 100} for i in range(20)])
         review = claude_review.analyze_pr(metadata, diff="+line\n" * 1200)
