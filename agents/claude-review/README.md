@@ -76,6 +76,8 @@ The included workflow uses `pull_request` (not `pull_request_target`) and checks
 python3 -m unittest agents/claude-review/tests/test_claude_review.py
 ```
 
+Pull requests that touch this agent also run the same suite via `.github/workflows/test-claude-review.yml`.
+
 ## How reviews work
 
 1. Fetch PR metadata via GitHub REST API (title, description, files, commits)
