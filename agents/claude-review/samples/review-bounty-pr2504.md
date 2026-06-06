@@ -17,7 +17,7 @@ This pull request titled "feat: add destructive command blocker hook (Issue #3)"
 
 ### Identified Risks
 
-- [ ] Debug/console statements detected in new code. Remove before merging.
+- [ ] No significant risks identified.
 
 ---
 
